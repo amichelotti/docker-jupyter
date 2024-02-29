@@ -5,7 +5,6 @@ FROM $BASE_CONTAINER
 
 
 USER ${NB_UID}
-ENV JUPYTER_PASS="epics"
 RUN mamba install --yes \
     'pyepics' \
     'epics::pvapy' \
@@ -15,4 +14,3 @@ RUN mamba install --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 RUN pip install softioc cothread
-RUN sed -i "s/# c.ServerApp.password = ''/c.ServerApp.password = '$JUPYTER_PASS' /" /home/${NB_USER}/.jupyter/jupyter_server_config.py
