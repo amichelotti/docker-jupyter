@@ -15,4 +15,4 @@ RUN mamba install --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 RUN pip install softioc cothread
-RUN sed -i "s/# c.ServerApp.password = ''/ServerApp.password = $JUPYTER_PASS /" /home/${NB_USER}/.jupyter/jupyter_server_config.py
+RUN sed -i "s/# c.ServerApp.password = ''/c.ServerApp.password = '$JUPYTER_PASS' /" /home/${NB_USER}/.jupyter/jupyter_server_config.py
