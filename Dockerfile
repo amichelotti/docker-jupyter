@@ -13,3 +13,4 @@ RUN mamba install --yes \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
+RUN sed -i "s/# c.ServerApp.password = ''/ServerApp.password = 'epics'/" /home/${NB_UID}/.jupyter/jupyter_server_config.py

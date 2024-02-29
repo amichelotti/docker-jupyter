@@ -1,4 +1,7 @@
 # jupyter-science-epics
+Base and documentation:
+
+https://jupyter-docker-stacks.readthedocs.io/en/latest/index.html
 
 To to evaluate:
 
