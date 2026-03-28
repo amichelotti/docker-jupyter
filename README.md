@@ -25,3 +25,7 @@ GitHub Actions builds the image for `linux/amd64` and `linux/arm64`.
 
 - Pull requests and branch pushes run build validation.
 - Tag pushes (`v*`) and manual workflow runs publish to GHCR.
+
+On `linux/arm64`, conda packages for some EPICS Python modules may be unavailable.
+The Docker build falls back to `pip` for `pyepics`, `pcaspy`, and `pvapy`, and fails
+explicitly if parity with amd64 cannot be satisfied.
