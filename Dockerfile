@@ -7,12 +7,13 @@ FROM ${BASE_CONTAINER}
 
 USER ${NB_UID}
 RUN set -eux; \
+    python -m pip install --no-cache-dir --upgrade pip uv; \
     arch="$(uname -m)"; \
     if [ "${arch}" = "aarch64" ] || [ "${arch}" = "arm64" ]; then \
-        pip install --no-cache-dir softioc cothread pyepics pvapy; \
+        uv pip install --system --no-cache softioc cothread pyepics pvapy; \
         export EPICS_BASE="$(python -c 'import os, epicscorelibs; print(os.path.dirname(epicscorelibs.__file__))')"; \
         export EPICS_HOST_ARCH=linux-aarch64; \
-        if ! pip install --no-cache-dir pcaspy; then \
+        if ! uv pip install --system --no-cache pcaspy; then \
             echo "pcaspy unavailable on ${arch}; continuing without it" >&2; \
         fi; \
     else \
@@ -22,7 +23,7 @@ RUN set -eux; \
             pyepics \
             pvapy; \
         mamba clean --all -f -y; \
-        pip install --no-cache-dir softioc cothread; \
+        uv pip install --system --no-cache softioc cothread; \
     fi; \
     fix-permissions "${CONDA_DIR}"; \
     fix-permissions "/home/${NB_USER}"

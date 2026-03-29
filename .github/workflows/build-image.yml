@@ -21,6 +21,7 @@ jobs:
   build:
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    name: Multi-arch Docker build
 
     steps:
       - name: Checkout
@@ -40,11 +41,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push image
+      - name: Build and push image (linux/amd64, linux/arm64)
         if: ${{ (github.event_name == 'push' && github.ref_type == 'tag') || github.event_name == 'workflow_dispatch' }}
         uses: docker/build-push-action@v6
         with:
           context: .
+          # The Dockerfile installs Python dependencies with uv on both architectures.
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
@@ -53,11 +55,12 @@ jobs:
           cache-from: type=gha,scope=jupyter-science-epics
           cache-to: type=gha,mode=max,scope=jupyter-science-epics
 
-      - name: Build image (validation)
+      - name: Build image validation (linux/amd64, linux/arm64)
         if: ${{ !((github.event_name == 'push' && github.ref_type == 'tag') || github.event_name == 'workflow_dispatch') }}
         uses: docker/build-push-action@v6
         with:
           context: .
+          # The Dockerfile installs Python dependencies with uv on both architectures.
           platforms: linux/amd64,linux/arm64
           push: false
           cache-from: type=gha,scope=jupyter-science-epics
