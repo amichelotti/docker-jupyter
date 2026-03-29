@@ -9,19 +9,20 @@ USER ${NB_UID}
 RUN set -eux; \
     arch="$(uname -m)"; \
     if [ "${arch}" = "aarch64" ] || [ "${arch}" = "arm64" ]; then \
-        pip install --no-cache-dir pyepics pcaspy pvapy || { \
-            echo "Required EPICS Python packages unavailable on ${arch} (expected: pyepics, pcaspy, pvapy)" >&2; \
-            exit 1; \
-        }; \
+        pip install --no-cache-dir softioc cothread pyepics pvapy; \
+        export EPICS_BASE="$(python -c 'import os, epicscorelibs; print(os.path.dirname(epicscorelibs.__file__))')"; \
+        export EPICS_HOST_ARCH=linux-aarch64; \
+        if ! pip install --no-cache-dir pcaspy; then \
+            echo "pcaspy unavailable on ${arch}; continuing without it" >&2; \
+        fi; \
     else \
         mamba install --yes \
             -c conda-forge \
             -c epics \
             pyepics \
-            pvapy \
-            pcaspy; \
+            pvapy; \
         mamba clean --all -f -y; \
+        pip install --no-cache-dir softioc cothread; \
     fi; \
-    pip install --no-cache-dir softioc cothread; \
     fix-permissions "${CONDA_DIR}"; \
     fix-permissions "/home/${NB_USER}"
